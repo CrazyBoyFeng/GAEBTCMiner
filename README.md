@@ -1,4 +1,4 @@
-GAEJMiner
+GAEJBTCMiner
 =========
 Google App Engine Java Bitcoin Miner
 Background Infomation
