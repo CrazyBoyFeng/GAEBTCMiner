@@ -3,7 +3,7 @@ GAEJBTCMiner
 Google App Engine Java Bitcoin Miner
 Background Infomation
 ---------
-Google App Engine is Google's computing platform, it provide some free CPU hours per application. Each user can create up to 10 applications for free. I have checked the [Terms of Service](https://developers.google.com/appengine/terms), and do not think this violate it. If you have any concern, please stop using gae immediately.
+Google App Engine is Google's computing platform, it provide some free CPU hours per application. Each user can create up to 10 applications for free. I have checked the [Terms of Service](https://developers.google.com/appengine/terms), and do not think this violate it. If you have any concern, please stop using it immediately.
 Installation Guide
 ---------
 Due to how Google App Engine works, you need the SDK to install it. Here are the steps:
