@@ -1,5 +1,7 @@
 package net.sdiz.bitcoin.jdo;
 
+package crazyboyfeng.gaejminer.jdo;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -10,8 +12,9 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.datanucleus.util.Base64;
+
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.repackaged.com.google.common.util.Base64;
 
 @PersistenceCapable(detachable = "true")
 public class Config {
@@ -20,26 +23,28 @@ public class Config {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	protected Key key;
+	/** RPC Server */
 	@Persistent
-	/** RPC Server Name */
-	protected String jsonRpcServer = "http://mining.bitcoin.cz:8332";
-	@Persistent
+	protected String jsonRpcServer = "http://pit.deepbit.net:8332";
 	/** RPC User Name */
-	protected String username = "j16sdiz.gaeminer";
 	@Persistent
+	protected String username = "crazyboyfeng@qq.com_test";
 	/** RPC Password */
-	protected String password = "unconfiged";
+	@Persistent
+	protected String password = "test";
 	/** HTTP Authentication Header */
 	protected transient String authorization;
-
-	@Persistent
 	/** Number of seconds for each work */
+	@Persistent
 	protected int targetRoundTime = 6;
+	/**
+	 * Number of hash per work (initial guess, will adjust according to
+	 * <code>targetRoundTime</code>
+	 */
 	@Persistent
-	/** Number of hash per work (initial guess, will adjust according to <code>targetRoundTime</code> */
 	protected int scanCount = 0xffff;
-	@Persistent
 	/** Number of second in each job. Never excess 10 minutes (GAE Limit) */
+	@Persistent
 	protected int targetTotalTime = 300;
 
 	protected Config() {
@@ -74,8 +79,7 @@ public class Config {
 	public String getAuth() {
 		if (authorization == null) {
 			String auth = getUsername() + ":" + getPassword();
-			authorization = "Basic " + Base64.encode(auth.getBytes());
-
+			authorization = "Basic " + Base64.encodeString(auth);
 		}
 		return authorization;
 	}
@@ -142,3 +146,4 @@ public class Config {
 		}
 	}
 }
+
