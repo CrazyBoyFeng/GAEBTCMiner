@@ -8,19 +8,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sdiz.bitcoin.hash.ScanHash;
-import net.sdiz.bitcoin.jdo.Config;
-
 import com.google.appengine.api.urlfetch.HTTPHeader;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.google.appengine.repackaged.org.json.JSONArray;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONObject;
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.google.apphosting.api.DeadlineExceededException;
+
+import net.sdiz.bitcoin.hash.ScanHash;
+import net.sdiz.bitcoin.jdo.Config;
 
 @SuppressWarnings("serial")
 public class MiningServlet extends HttpServlet {
@@ -46,8 +46,8 @@ public class MiningServlet extends HttpServlet {
 			config = Config.getConfig();
 			long targetTotalTime = config.getTargetTotalTime();
 
-			log.info("Start " + config.getUsername() + " [" + config.getAuth()
-					+ "]");
+			log.info("Start " + config.getUsername() + " at "
+					+ config.getJsonRpcServer());
 			long startTime = System.currentTimeMillis();
 			do {
 				long startRoundTime = System.currentTimeMillis();
@@ -103,7 +103,8 @@ public class MiningServlet extends HttpServlet {
 		URLFetchService ufs = URLFetchServiceFactory.getURLFetchService();
 		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
 		req.setPayload(getwork.toString().getBytes());
-		req.addHeader(new HTTPHeader("Authorization", config.getAuth()));
+
+		req.addHeader(new HTTPHeader("authorization", config.getAuth()));
 
 		HTTPResponse resp = ufs.fetch(req);
 		String content = new String(resp.getContent());
@@ -138,10 +139,12 @@ public class MiningServlet extends HttpServlet {
 		getwork.put("id", 0);
 
 		URL url = new URL(config.getJsonRpcServer());
+
 		URLFetchService ufs = URLFetchServiceFactory.getURLFetchService();
 		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
 		req.setPayload(getwork.toString().getBytes());
-		req.addHeader(new HTTPHeader("Authorization", config.getAuth()));
+
+		req.addHeader(new HTTPHeader("authorization", config.getAuth()));
 
 		HTTPResponse resp = ufs.fetch(req);
 		String content = new String(resp.getContent());
