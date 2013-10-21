@@ -3,6 +3,6 @@
 	<cron>
 		<url>/cron/mining</url>
 		<description>Bitcoin Mining</description>
-		<schedule>every 31 minutes</schedule>
+		<schedule>every 10 minutes</schedule>
 	</cron>
 </cronentries>
