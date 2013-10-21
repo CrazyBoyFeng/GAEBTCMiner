@@ -1,7 +1,5 @@
 package net.sdiz.bitcoin.jdo;
 
-package crazyboyfeng.gaejminer.jdo;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
