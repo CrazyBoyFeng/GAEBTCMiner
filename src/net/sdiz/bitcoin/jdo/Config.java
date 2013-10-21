@@ -45,7 +45,7 @@ public class Config {
 	protected int scanCount = 0xffff;
 	/** Number of second in each job. Never excess 10 minutes (GAE Limit) */
 	@Persistent
-	protected int targetTotalTime = 300;
+	protected int targetTotalTime = 540;
 
 	protected Config() {
 	}
