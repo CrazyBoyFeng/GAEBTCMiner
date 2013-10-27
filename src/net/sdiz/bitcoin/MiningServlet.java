@@ -93,28 +93,34 @@ public class MiningServlet extends HttpServlet {
 		config.setScanCount(scanCount);
 	}
 
-	private Work fetchWork(Config config) throws IOException, JSONException {
+	private Work fetchWork(Config config,int level) throws IOException, JSONException {
 		JSONObject getwork = new JSONObject();
 		getwork.put("method", "getwork");
 		getwork.put("params", new JSONArray());
 		getwork.put("id", 0);
 		URL url = new URL(config.getJsonRpcServer());
 		URLFetchService ufs = URLFetchServiceFactory.getURLFetchService();
-		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST,Builder.withDeadline(600));
+		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST,Builder.withDeadline(config.getTargetTotalTime()));
 		req.setPayload(getwork.toString().getBytes());
 		req.addHeader(new HTTPHeader("authorization", config.getAuth()));
 		HTTPResponse resp = ufs.fetch(req);
 		String content = new String(resp.getContent());
-		if (resp.getResponseCode() != 200) {
-			//throw new IOException( "fetchWork Error: " + resp.getResponseCode() + " " + content);
-			return fetchWork(config);
+		if(resp.getResponseCode()!=200){
+			if(level<config.getTargetTotalTime()/60){
+				return fetchWork(config, ++level);
+			}else{
+				throw new IOException("fetchWork Error: " + resp.getResponseCode() + " "+ content);
+			}
 		}
 		JSONObject respwork = new JSONObject(content);
 		Object errorP = respwork.get("error");
 		if (errorP != JSONObject.NULL) {
-			//JSONObject error = (JSONObject) errorP;
-			//throw new IOException( "fetchWork Error: " + error.getString("message") + " (" + error.getInt("code") + ")");
-			return fetchWork(config);
+			JSONObject error = (JSONObject) errorP;
+			if(level<config.getTargetTotalTime()/60){
+				return fetchWork(config, ++level);
+			}else{
+				throw new IOException("fetchWork Error: " + error.getString("message")+ " (" + error.getInt("code") + ")");
+			}
 		}
 		JSONObject result = respwork.getJSONObject("result");
 		Work work = new Work( //
@@ -125,30 +131,34 @@ public class MiningServlet extends HttpServlet {
 		return work;
 	}
 
-	private boolean submitWork(Config config, Work work) throws JSONException, IOException {
+	private boolean submitWork(Config config, Work work,int level) throws IOException, JSONException {
 		JSONObject getwork = new JSONObject();
 		getwork.put("method", "getwork");
 		getwork.append("params", work.data);
 		getwork.put("id", 0);
 		URL url = new URL(config.getJsonRpcServer());
 		URLFetchService ufs = URLFetchServiceFactory.getURLFetchService();
-		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST,Builder.withDeadline(600));
+		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST,Builder.withDeadline(config.getTargetTotalTime()));
 		req.setPayload(getwork.toString().getBytes());
 		req.addHeader(new HTTPHeader("authorization", config.getAuth()));
 		HTTPResponse resp = ufs.fetch(req);
 		String content = new String(resp.getContent());
-		if (resp.getResponseCode() != 200) {
-			//log.severe( "submitWork Error: " + resp.getResponseCode() + " " + content);
-			//return false;
-			return submitWork(config, work);
+		if(resp.getResponseCode()!=200){
+			if(level<config.getTargetTotalTime()/60){
+				return submitWork(config, work, level);
+			}else{
+				throw new IOException("submitWork Error: " + resp.getResponseCode() + " " + content);
+			}
 		}
 		JSONObject respwork = new JSONObject(content);
 		Object errorP = respwork.get("error");
 		if (errorP != JSONObject.NULL) {
-			//JSONObject error = (JSONObject) errorP;
-			//log.severe( "submitWork Error: " + error.getString("message") + " (" + error.getInt("code") + ")");
-			//return false;
-			return submitWork(config, work);
+			JSONObject error = (JSONObject) errorP;
+			if(level<config.getTargetTotalTime()/60){
+				return submitWork(config, work, ++level);
+			}else{
+			throw new IOException("submitWork Error: " + error.getString("message") + " (" + error.getInt("code") + ")");
+			}
 		}
 		return respwork.getBoolean("result");
 	}
