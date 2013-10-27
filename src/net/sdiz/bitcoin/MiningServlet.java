@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.google.appengine.api.urlfetch.FetchOptions.Builder.withDeadline;
 import com.google.appengine.api.urlfetch.HTTPHeader;
 import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
@@ -101,7 +102,7 @@ public class MiningServlet extends HttpServlet {
 		URL url = new URL(config.getJsonRpcServer());
 
 		URLFetchService ufs = URLFetchServiceFactory.getURLFetchService();
-		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST,withDeadline(600));
 		req.setPayload(getwork.toString().getBytes());
 
 		req.addHeader(new HTTPHeader("authorization", config.getAuth()));
@@ -141,7 +142,7 @@ public class MiningServlet extends HttpServlet {
 		URL url = new URL(config.getJsonRpcServer());
 
 		URLFetchService ufs = URLFetchServiceFactory.getURLFetchService();
-		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+		HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST,withDeadline(600));
 		req.setPayload(getwork.toString().getBytes());
 
 		req.addHeader(new HTTPHeader("authorization", config.getAuth()));
