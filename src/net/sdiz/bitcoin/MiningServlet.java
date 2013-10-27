@@ -52,11 +52,11 @@ public class MiningServlet extends HttpServlet {
 			long startTime = System.currentTimeMillis();
 			do {
 				long startRoundTime = System.currentTimeMillis();
-				Work work = fetchWork(config);
+				Work work = fetchWork(config, 0);
 				boolean found = sh.scan(work, 1, config.getScanCount());
 				if (found) {
 					log.warning("found: " + work.data);
-					if (submitWork(config, work)) {
+					if (submitWork(config, work, 0)) {
 						log.warning("Yay! Accepted!");
 						accepted++;
 					} else {
@@ -145,7 +145,7 @@ public class MiningServlet extends HttpServlet {
 		String content = new String(resp.getContent());
 		if(resp.getResponseCode()!=200){
 			if(level<config.getTargetTotalTime()/60){
-				return submitWork(config, work, level);
+				return submitWork(config, work, ++level);
 			}else{
 				throw new IOException("submitWork Error: " + resp.getResponseCode() + " " + content);
 			}
