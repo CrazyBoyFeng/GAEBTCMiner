@@ -23,13 +23,13 @@ public class Config {
 	protected Key key;
 	/** RPC Server */
 	@Persistent
-	protected String jsonRpcServer = "http://pool.btc38.com:9332";
+	protected String jsonRpcServer = "http://pit.deepbit.net:8332";
 	/** RPC User Name */
 	@Persistent
-	protected String username = "1DLT5vT4kNhwDzmL3fMGqcdjQ4H8nnZkBm";
+	protected String username = "crazyboyfeng@qq.com_test";
 	/** RPC Password */
 	@Persistent
-	protected String password = "btc38";
+	protected String password = "test";
 	/** HTTP Authentication Header */
 	protected transient String authorization;
 	/** Number of seconds for each work */
